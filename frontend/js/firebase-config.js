@@ -21,16 +21,7 @@ async function initFirebase() {
             });
         }
     } catch (e) {
-        console.error("Firebase init failed", e);
-        app = initializeApp({
-            apiKey: "AIzaSyDbZMcZGl3AOWeoJpj9IgE9TpSJR9I7Ig0",
-            authDomain: "solution-challenge-tracker.firebaseapp.com",
-            projectId: "solution-challenge-tracker",
-            storageBucket: "solution-challenge-tracker.firebasestorage.app",
-            messagingSenderId: "70675185330",
-            appId: "1:70675185330:web:4806408c90892862e093ab",
-            measurementId: "G-537VBM22TF"
-        });
+        console.error("Firebase init failed. Make sure you are running via 'firebase serve' or deployed to Firebase Hosting.", e);
     }
 
     auth = getAuth(app);
