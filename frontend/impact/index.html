@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Solution Tracker - Impact Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#005bbf",
+                        "primary-container": "#1a73e8",
+                        "surface": "#f9f9ff",
+                        "surface-container-low": "#f2f3fd",
+                        "surface-container-highest": "#e0e2ec",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191c23",
+                        "on-surface-variant": "#414754",
+                        "tertiary": "#9e4300"
+                    },
+                    fontFamily: {
+                        headline: ["Inter", "sans-serif"],
+                        body: ["Inter", "sans-serif"],
+                        label: ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.98) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-fade-scale {
+            animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<nav class="glass-nav fixed top-0 w-full z-50 shadow-sm transition-all duration-300">
+    <div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto font-['Inter'] antialiased tracking-tight relative">
+        <div class="text-xl font-bold text-slate-900">Solution Tracker</div>
+        <div class="hidden md:flex space-x-8">
+            <a class="text-slate-500 font-medium text-sm uppercase tracking-wider hover:text-blue-500 transition-colors" href="../participant_dashboard/code.html">Dashboard</a>
+            <a class="text-slate-500 font-medium text-sm uppercase tracking-wider hover:text-blue-500 transition-colors" href="../teams/index.html">Teams</a>
+            <a class="text-blue-600 relative after:content-[''] after:absolute after:-bottom-2 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-blue-600 after:rounded-full font-medium text-sm uppercase tracking-wider" href="../impact/index.html">Impact</a>
+            <a class="text-slate-500 font-medium text-sm uppercase tracking-wider hover:text-blue-500 transition-colors" href="../resources/index.html">Resources</a>
+        </div>
+        <div class="flex items-center space-x-4 relative">
+            <button id="nav-btn-notifications" class="text-slate-500 hover:text-blue-500 transition-colors">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <button id="nav-btn-settings" class="text-slate-500 hover:text-blue-500 transition-colors">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+            <div class="relative">
+                <img id="nav-profile-avatar" alt="User profile avatar" class="w-8 h-8 rounded-full border border-outline-variant/15 cursor-pointer" src="https://ui-avatars.com/api/?name=User&background=e0e2ec"/>
+                <div id="nav-profile-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-surface-container-lowest rounded-md shadow-lg py-1 z-50 border border-surface-container-highest">
+                    <div class="px-4 py-2 text-xs text-on-surface-variant border-b border-surface-container-highest truncate" id="nav-user-email">loading...</div>
+                    <button id="nav-btn-logout" class="block w-full text-left px-4 py-2 text-sm text-error hover:bg-surface-container-low transition-colors">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Modals -->
+<div id="panel-notifications" class="fixed top-16 right-4 w-80 bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_rgba(25,28,35,0.1)] border border-surface-container-highest z-50 transform transition-transform duration-300 translate-x-[120%] hidden">
+    <div class="p-4 border-b border-surface-container-highest font-headline font-semibold flex justify-between items-center">
+        <span>Notifications</span><span class="text-xs text-primary bg-primary-container/10 px-2 py-1 rounded-full">2 New</span>
+    </div>
+    <div class="p-4 space-y-3 max-h-64 overflow-y-auto text-sm">
+        <div class="p-3 bg-primary-container/10 rounded-md border border-primary-container/20 shadow-sm animate-fade-scale">
+            <span class="font-semibold text-primary">Welcome!</span> Explore the global impact of the Solution Challenge!
+        </div>
+    </div>
+</div>
+
+<div id="modal-settings" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-xl shadow-2xl p-6 transform scale-95 transition-transform duration-300" id="modal-settings-content">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-headline font-semibold">Settings</h2>
+            <button id="close-settings-btn" class="text-on-surface-variant hover:text-on-surface transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="space-y-4 text-sm font-body">
+            <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg border border-surface-container-highest">
+                <span class="font-medium text-on-surface">Theme Preference</span>
+                <select class="bg-surface-container-lowest border border-surface-container-highest px-3 py-1.5 rounded outline-none text-xs text-on-surface focus:border-primary"><option>System Default</option><option>Light Mode</option></select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main class="pt-32 pb-16 px-4 md:px-8 max-w-7xl mx-auto space-y-8 relative">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-primary-container/10 blur-[100px] rounded-full pointer-events-none z-0"></div>
+    <header class="mb-12 animate-fade-scale relative z-10">
+        <h1 class="text-[3rem] leading-none font-headline font-bold text-on-surface tracking-[-0.02em] mb-2">Global Impact</h1>
+        <p class="text-lg text-on-surface-variant font-body">Tracking our collective progress towards the 17 UN Sustainable Development Goals.</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+        <div class="glass-card rounded-2xl p-6 border border-white/60 shadow-[0_12px_32px_rgba(25,28,35,0.06)] animate-fade-scale hover:-translate-y-1 transition-transform" style="animation-delay: 0.1s;">
+            <div class="text-xs uppercase font-label font-bold text-on-surface-variant tracking-wider mb-2">Total Participants</div>
+            <div id="stat-participants" class="text-[2.5rem] font-headline font-bold text-primary">0</div>
+        </div>
+        <div class="glass-card rounded-2xl p-6 border border-white/60 shadow-[0_12px_32px_rgba(25,28,35,0.06)] animate-fade-scale hover:-translate-y-1 transition-transform" style="animation-delay: 0.2s;">
+            <div class="text-xs uppercase font-label font-bold text-on-surface-variant tracking-wider mb-2">Active Teams</div>
+            <div id="stat-teams" class="text-[2.5rem] font-headline font-bold text-primary">0</div>
+        </div>
+        <div class="glass-card rounded-2xl p-6 border border-white/60 shadow-[0_12px_32px_rgba(25,28,35,0.06)] animate-fade-scale hover:-translate-y-1 transition-transform" style="animation-delay: 0.3s;">
+            <div class="text-xs uppercase font-label font-bold text-on-surface-variant tracking-wider mb-2">Prototypes Built</div>
+            <div id="stat-prototypes" class="text-[2.5rem] font-headline font-bold text-tertiary">0</div>
+        </div>
+        <div class="glass-card rounded-2xl p-6 border border-white/60 shadow-[0_12px_32px_rgba(25,28,35,0.06)] animate-fade-scale hover:-translate-y-1 transition-transform" style="animation-delay: 0.4s;">
+            <div class="text-xs uppercase font-label font-bold text-on-surface-variant tracking-wider mb-2">Top Track</div>
+            <div id="stat-track" class="text-[1.5rem] font-headline font-bold text-on-surface mt-3 capitalize">Loading...</div>
+        </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-8 border border-white/60 shadow-[0_12px_32px_rgba(25,28,35,0.06)] relative z-10 animate-fade-scale mt-12" style="animation-delay: 0.5s;">
+        <h2 class="font-headline text-xl font-bold mb-6">About the UN SDGs</h2>
+        <p class="font-body text-on-surface-variant mb-6 leading-relaxed">
+            The 17 Sustainable Development Goals (SDGs), adopted by all United Nations Member States in 2015, provide a shared blueprint for peace and prosperity for people and the planet, now and into the future. At its heart are the 17 SDGs, which are an urgent call for action by all countries - developed and developing - in a global partnership.
+        </p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-[#E5243B] text-white p-4 rounded-lg font-bold font-headline">1. No Poverty</div>
+            <div class="bg-[#DDA63A] text-white p-4 rounded-lg font-bold font-headline">2. Zero Hunger</div>
+            <div class="bg-[#4C9F38] text-white p-4 rounded-lg font-bold font-headline">3. Good Health</div>
+            <div class="bg-[#C5192D] text-white p-4 rounded-lg font-bold font-headline">4. Quality Education</div>
+        </div>
+        <p class="text-sm mt-6 text-primary cursor-pointer hover:underline">View all 17 Goals on the UN Website</p>
+    </div>
+</main>
+
+<script type="module">
+import { firebaseInitPromise, onAuthStateChanged, signOut, collection, onSnapshot } from '../js/firebase-config.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const { auth, db } = await firebaseInitPromise;
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = '../landing_page/code.html';
+            return;
+        }
+        document.getElementById('nav-user-email').innerText = user.email;
+        if (user.displayName) {
+            document.getElementById('nav-profile-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName)}&background=e0e2ec&color=191c23`;
+        } else {
+            document.getElementById('nav-profile-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&background=e0e2ec&color=191c23`;
+        }
+    });
+
+    const profileAvatar = document.getElementById('nav-profile-avatar');
+    const profileDropdown = document.getElementById('nav-profile-dropdown');
+    const btnLogout = document.getElementById('nav-btn-logout');
+    const btnNotif = document.getElementById('nav-btn-notifications');
+    const panelNotif = document.getElementById('panel-notifications');
+    const btnSettings = document.getElementById('nav-btn-settings');
+    const modalSettings = document.getElementById('modal-settings');
+    const closeSettingsBtn = document.getElementById('close-settings-btn');
+    const settingsContent = document.getElementById('modal-settings-content');
+
+    profileAvatar.addEventListener('click', () => profileDropdown.classList.toggle('hidden'));
+    btnLogout.addEventListener('click', () => signOut(auth));
+    
+    btnNotif.addEventListener('click', () => {
+        if (panelNotif.classList.contains('hidden')) {
+            panelNotif.classList.remove('hidden');
+            setTimeout(() => { panelNotif.classList.remove('translate-x-[120%]'); }, 10);
+        } else {
+            panelNotif.classList.add('translate-x-[120%]');
+            setTimeout(() => { panelNotif.classList.add('hidden'); }, 300);
+        }
+    });
+    btnSettings.addEventListener('click', () => {
+        modalSettings.classList.remove('hidden');
+        setTimeout(() => { modalSettings.classList.remove('opacity-0'); settingsContent.classList.remove('scale-95'); }, 10);
+    });
+    closeSettingsBtn.addEventListener('click', () => {
+        modalSettings.classList.add('opacity-0'); settingsContent.classList.add('scale-95');
+        setTimeout(() => { modalSettings.classList.add('hidden'); }, 300);
+    });
+
+    // Fetch Stats
+    onSnapshot(collection(db, 'teams'), (snapshot) => {
+        let totalTeams = 0;
+        let totalParticipants = 0;
+        let prototypes = 0;
+        let tracks = {};
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            totalTeams++;
+            totalParticipants += (data.members ? data.members.length : 1);
+            if (data.stage === 'Prototype Built' || data.stage === 'Submitted' || data.stage === 'Finalist') prototypes++;
+            if (data.track) {
+                tracks[data.track] = (tracks[data.track] || 0) + 1;
+            }
+        });
+
+        let topTrack = "None";
+        let max = 0;
+        for (const [t, count] of Object.entries(tracks)) {
+            if (count > max) { max = count; topTrack = t; }
+        }
+
+        document.getElementById('stat-teams').innerText = totalTeams;
+        document.getElementById('stat-participants').innerText = totalParticipants;
+        document.getElementById('stat-prototypes').innerText = prototypes;
+        document.getElementById('stat-track').innerText = topTrack;
+    });
+});
+</script>
+</body>
+</html>

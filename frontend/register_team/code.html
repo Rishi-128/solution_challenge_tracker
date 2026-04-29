@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Register - Solution Challenge</title>
+<!-- Google Fonts: Inter & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#0e0200",
+                    "secondary-container": "#b2c9fe",
+                    "on-surface-variant": "#414754",
+                    "background": "#f9f9ff",
+                    "outline": "#727785",
+                    "on-tertiary-fixed": "#341100",
+                    "inverse-on-surface": "#eff0fa",
+                    "on-tertiary": "#ffffff",
+                    "surface-dim": "#d8d9e3",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "on-surface": "#191c23",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-container-highest": "#e0e2ec",
+                    "tertiary": "#9e4300",
+                    "primary-container": "#1a73e8",
+                    "on-primary-container": "#ffffff",
+                    "secondary-fixed-dim": "#afc7fb",
+                    "surface-container-low": "#f2f3fd",
+                    "tertiary-fixed": "#ffdbcb",
+                    "surface-container": "#ecedf7",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#c55500",
+                    "surface": "#f9f9ff",
+                    "surface-tint": "#005bc0",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-secondary-fixed-variant": "#2e4673",
+                    "on-secondary-fixed": "#001a41",
+                    "surface-variant": "#e0e2ec",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#475e8c",
+                    "on-background": "#191c23",
+                    "primary-fixed-dim": "#adc7ff",
+                    "surface-bright": "#f9f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed-variant": "#004493",
+                    "error": "#ba1a1a",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#2d3038",
+                    "inverse-primary": "#adc7ff",
+                    "primary": "#005bbf",
+                    "outline-variant": "#c1c6d6",
+                    "tertiary-fixed-dim": "#ffb691",
+                    "on-primary": "#ffffff",
+                    "surface-container-high": "#e6e8f2",
+                    "on-secondary-container": "#3d5481",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#001a41"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": ["Inter", "sans-serif"],
+                    "body": ["Inter", "sans-serif"],
+                    "label": ["Inter", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        /* Ambient Shadow Utility from Design System */
+        .ambient-shadow {
+            box-shadow: 0 12px 32px rgba(25, 28, 35, 0.06);
+        }
+        /* Hide scrollbar for cleaner editorial look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-slide-in-left {
+            animation: slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<!-- Suppressing Navigation Shell: This is a linear/transactional onboarding screen -->
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col md:flex-row overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Left Editorial Pane -->
+<aside class="hidden md:flex md:w-5/12 bg-surface-container-low flex-col justify-between relative overflow-hidden">
+<!-- Abstract gradient background element to avoid hard lines -->
+<div class="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top_left,_var(--tw-colors-primary-container)_0%,_transparent_50%)]"></div>
+<div class="relative z-10 p-12 lg:p-16 flex flex-col h-full justify-between animate-slide-in-left">
+<div>
+<div class="flex items-center gap-3 mb-16">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-headline font-bold tracking-tight text-xl">Solution Challenge</span>
+</div>
+<h1 class="font-headline text-[3.5rem] leading-[1.1] tracking-[-0.02em] font-semibold mb-6 text-on-surface">
+                    Build for <br/>
+<span class="text-primary">Impact.</span>
+</h1>
+<p class="font-body text-lg leading-relaxed text-on-surface-variant max-w-md">
+                    Join a global community of student developers. Use Google technologies to build solutions for local community problems and advance the UN Sustainable Development Goals.
+                </p>
+</div>
+<div class="mt-auto pt-12">
+<img alt="Students collaborating" class="w-full h-64 object-cover rounded-xl ambient-shadow grayscale-[20%] mix-blend-multiply opacity-90" data-alt="Group of diverse university students collaborating enthusiastically around a laptop in a modern, bright campus workspace with natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEFKIrvYgfFFVRChTFnjQ9BEa1oNUghZmg2q1HEbzP3beR0QcBsYeoLoNDiNxcs8ZlflyOmvYekvQr7gXPPiCuuD8iQC9WYFm4Erit8qoYUtQplF98cguG_ulN92OuzOunihn0dfE34ACamsqtDd34wW4MeWsR9_K0u0teDdZTLkXdqHmwUBSpB1P0g-axTOkZO-BU7Ble_b4NZpfXdxVyQ1RaTeIJQbNc14gP7rMPHZzBpVW2pSIMD4fMq0Y-EMJaS4PiFKIyGCtm"/>
+</div>
+</div>
+</aside>
+<!-- Right Form Pane -->
+<main class="w-full md:w-7/12 h-screen overflow-y-auto no-scrollbar bg-surface relative">
+<div class="p-6 sm:p-12 lg:p-20 flex justify-center min-h-full items-center">
+<!-- Mobile Header (Visible only on small screens) -->
+<div class="md:hidden absolute top-6 left-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-headline font-bold tracking-tight">Solution Challenge</span>
+</div>
+<!-- The Guided Canvas: Central Form Card -->
+<div class="w-full max-w-2xl glass-panel rounded-2xl ambient-shadow p-8 sm:p-12 mt-12 md:mt-0 animate-fade-in-up border border-white/60" style="animation-delay: 0.2s;">
+<div class="mb-12">
+<h2 class="font-headline text-2xl font-semibold tracking-tight text-on-surface mb-2">Register Your Team</h2>
+<p class="font-body text-on-surface-variant">Tell us about your team and the problem you're solving.</p>
+</div>
+<form id="register-team-form" action="#" class="space-y-10" method="POST">
+<!-- Section: Team Identity -->
+<div class="space-y-6">
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs uppercase tracking-wider text-on-surface-variant font-medium" for="team_name">Team Name</label>
+<input class="w-full bg-surface-container-highest px-4 py-3.5 rounded-t-DEFAULT border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-all duration-200 font-body text-on-surface placeholder:text-outline" id="team_name" name="team_name" placeholder="Enter a unique team name" required="" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs uppercase tracking-wider text-on-surface-variant font-medium" for="university">College / University</label>
+<input class="w-full bg-surface-container-highest px-4 py-3.5 rounded-t-DEFAULT border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-all duration-200 font-body text-on-surface placeholder:text-outline" id="university" name="university" placeholder="Where is your team based?" required="" type="text"/>
+</div>
+</div>
+<!-- Section: Project Details -->
+<div class="space-y-6 pt-4">
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs uppercase tracking-wider text-on-surface-variant font-medium" for="track">Primary Track</label>
+<div class="relative">
+<select class="appearance-none w-full bg-surface-container-highest px-4 py-3.5 rounded-t-DEFAULT border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-all duration-200 font-body text-on-surface cursor-pointer" id="track" name="track" required="">
+<option disabled="" selected="" value="">Select a focus area</option>
+<option value="health">Health &amp; Wellness</option>
+<option value="education">Quality Education</option>
+<option value="sustainability">Sustainability &amp; Climate</option>
+<option value="inclusion">Diversity &amp; Inclusion</option>
+<option value="other">Other UN SDG</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs uppercase tracking-wider text-on-surface-variant font-medium" for="project_title">Project Title</label>
+<input class="w-full bg-surface-container-highest px-4 py-3.5 rounded-t-DEFAULT border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-all duration-200 font-body text-on-surface placeholder:text-outline" id="project_title" name="project_title" placeholder="What is the name of your solution?" required="" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs uppercase tracking-wider text-on-surface-variant font-medium" for="project_description">Project Description</label>
+<textarea class="w-full bg-surface-container-highest px-4 py-3.5 rounded-t-DEFAULT border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-all duration-200 font-body text-on-surface placeholder:text-outline resize-y" id="project_description" name="project_description" placeholder="Briefly describe the problem and your proposed technological solution..." required="" rows="4"></textarea>
+</div>
+</div>
+<!-- Section: Team Members -->
+<div class="space-y-4 pt-4">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline text-lg font-medium text-on-surface">Team Members</h3>
+<span id="member-count-display" class="font-label text-xs uppercase tracking-wider text-tertiary font-medium">1 / 5 Added</span>
+</div>
+<div id="members-container" class="space-y-3">
+    <!-- Logged in user member -->
+    <div class="flex items-center justify-between bg-surface-container-low p-4 rounded-lg">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-headline font-semibold">
+                You
+            </div>
+            <div>
+                <p class="font-body font-medium text-sm text-on-surface">Team Captain <span class="text-xs text-outline ml-2">(You)</span></p>
+                <p class="font-body text-xs text-on-surface-variant">Assigned from your account automatically</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Add Member Action -->
+<button id="add-member-btn" class="w-full flex items-center justify-center gap-2 py-4 bg-surface-container-high text-primary hover:bg-surface-container-highest transition-colors rounded-full font-headline font-medium text-sm border border-primary/10 hover:-translate-y-0.5 hover:shadow-sm" type="button">
+<span class="material-symbols-outlined text-[1.25rem]">add</span>
+    Add Team Member
+</button>
+</div>
+<!-- Submit Action -->
+<div class="pt-8">
+<button class="w-full py-4 bg-gradient-to-r from-primary to-blue-600 text-white rounded-full font-label font-bold uppercase tracking-[0.05em] shadow-[0_4px_14px_rgba(0,91,191,0.2)] hover:shadow-[0_6px_20px_rgba(0,91,191,0.3)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2" type="submit">
+                            Register Team
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<p class="text-center font-body text-xs text-on-surface-variant mt-4">
+                            By registering, you agree to the Challenge Terms and Conditions.
+                        </p>
+</div>
+</form>
+</div>
+</div>
+</main>
+<script type="module">
+import { firebaseInitPromise, onAuthStateChanged, collection, setDoc, doc, updateDoc } from '../js/firebase-config.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const { auth, db } = await firebaseInitPromise;
+    let currentUser = null;
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUser = user;
+        } else {
+            // Redirect to login if not authenticated
+            window.location.href = '../landing_page/code.html';
+        }
+    });
+
+    let additionalMembers = [];
+
+    const addMemberBtn = document.getElementById('add-member-btn');
+    const membersContainer = document.getElementById('members-container');
+    const memberCountDisplay = document.getElementById('member-count-display');
+
+    function updateMemberUI() {
+        // Redraw additional members
+        const extraMembersElements = document.querySelectorAll('.dynamic-member');
+        extraMembersElements.forEach(el => el.remove());
+
+        additionalMembers.forEach((mem, index) => {
+            const div = document.createElement('div');
+            div.className = "dynamic-member flex flex-col gap-3 bg-surface-container-low p-4 rounded-lg relative";
+            div.innerHTML = `
+                <div class="absolute right-4 top-4">
+                    <button class="delete-member-btn text-on-surface-variant hover:text-error transition-colors" type="button" data-index="${index}">
+                        <span class="material-symbols-outlined">delete</span>
+                    </button>
+                </div>
+                <div class="flex flex-col gap-2 relative z-10 w-[90%]">
+                    <label class="font-label text-[10px] uppercase tracking-wider text-on-surface-variant">Name</label>
+                    <input class="member-name-input bg-surface-container-highest px-3 py-2 rounded border-b-2 border-transparent focus:border-primary outline-none text-sm" value="${mem.name}" data-index="${index}" placeholder="Member Name" required />
+                </div>
+                <div class="flex flex-col gap-2 relative z-10 w-[90%]">
+                    <label class="font-label text-[10px] uppercase tracking-wider text-on-surface-variant">Email</label>
+                    <input class="member-email-input bg-surface-container-highest px-3 py-2 rounded border-b-2 border-transparent focus:border-primary outline-none text-sm" value="${mem.email}" data-index="${index}" placeholder="Member Email" type="email" required />
+                </div>
+            `;
+            membersContainer.appendChild(div);
+        });
+
+        // Add listeners
+        document.querySelectorAll('.delete-member-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(e.currentTarget.getAttribute('data-index'));
+                additionalMembers.splice(idx, 1);
+                updateMemberUI();
+            });
+        });
+        
+        document.querySelectorAll('.member-name-input').forEach(input => {
+            input.addEventListener('input', (e) => {
+                const idx = parseInt(e.target.getAttribute('data-index'));
+                additionalMembers[idx].name = e.target.value;
+            });
+        });
+
+        document.querySelectorAll('.member-email-input').forEach(input => {
+            input.addEventListener('input', (e) => {
+                const idx = parseInt(e.target.getAttribute('data-index'));
+                additionalMembers[idx].email = e.target.value;
+            });
+        });
+
+        memberCountDisplay.innerText = `${additionalMembers.length + 1} / 5 Added`;
+        
+        if (additionalMembers.length >= 4) {
+             addMemberBtn.style.display = 'none';
+        } else {
+             addMemberBtn.style.display = 'flex';
+        }
+    }
+
+    addMemberBtn.addEventListener('click', () => {
+        if (additionalMembers.length < 4) {
+            additionalMembers.push({name: '', email: '', role: 'Member'});
+            updateMemberUI();
+        }
+    });
+
+    const form = document.getElementById('register-team-form');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (!currentUser) return;
+        
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Registering...';
+
+        try {
+            const formData = new FormData(form);
+            
+            // Build the members array
+            let finalMembers = [ 
+                { uid: currentUser.uid, name: currentUser.displayName || 'Captain', email: currentUser.email, role: 'Captain' } 
+            ];
+            
+            additionalMembers.forEach(mem => {
+                finalMembers.push({ name: mem.name, email: mem.email, role: 'Member' });
+            });
+
+            const teamData = {
+                teamName: formData.get('team_name'),
+                college: formData.get('university'),
+                track: formData.get('track'),
+                projectTitle: formData.get('project_title'),
+                projectDesc: formData.get('project_description'),
+                members: finalMembers,
+                stage: 'Registered',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            // Auto-generate teamId by creating a doc ref in 'teams' collection
+            const teamRef = doc(collection(db, 'teams'));
+            await setDoc(teamRef, teamData);
+
+            // Update user to hold the new teamId
+            const userRef = doc(db, 'users', currentUser.uid);
+            await updateDoc(userRef, {
+                teamId: teamRef.id
+            });
+
+            window.location.href = '../participant_dashboard/code.html';
+        } catch (error) {
+            console.error("Error registering team: ", error);
+            alert("Failed to register team. Check console for errors.");
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Register Team <span class="material-symbols-outlined text-sm">arrow_forward</span>';
+        }
+    });
+});
+</script>
+</body></html>

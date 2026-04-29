@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Solution Tracker - Resources</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#005bbf",
+                        "primary-container": "#1a73e8",
+                        "surface": "#f9f9ff",
+                        "surface-container-low": "#f2f3fd",
+                        "surface-container-highest": "#e0e2ec",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191c23",
+                        "on-surface-variant": "#414754",
+                        "tertiary": "#9e4300"
+                    },
+                    fontFamily: {
+                        headline: ["Inter", "sans-serif"],
+                        body: ["Inter", "sans-serif"],
+                        label: ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.98) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-fade-scale {
+            animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<nav class="glass-nav fixed top-0 w-full z-50 shadow-sm transition-all duration-300">
+    <div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto font-['Inter'] antialiased tracking-tight relative">
+        <div class="text-xl font-bold text-slate-900">Solution Tracker</div>
+        <div class="hidden md:flex space-x-8">
+            <a class="text-slate-500 font-medium text-sm uppercase tracking-wider hover:text-blue-500 transition-colors" href="../participant_dashboard/code.html">Dashboard</a>
+            <a class="text-slate-500 font-medium text-sm uppercase tracking-wider hover:text-blue-500 transition-colors" href="../teams/index.html">Teams</a>
+            <a class="text-slate-500 font-medium text-sm uppercase tracking-wider hover:text-blue-500 transition-colors" href="../impact/index.html">Impact</a>
+            <a class="text-blue-600 relative after:content-[''] after:absolute after:-bottom-2 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-blue-600 after:rounded-full font-medium text-sm uppercase tracking-wider" href="../resources/index.html">Resources</a>
+        </div>
+        <div class="flex items-center space-x-4 relative">
+            <button id="nav-btn-notifications" class="text-slate-500 hover:text-blue-500 transition-colors">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <button id="nav-btn-settings" class="text-slate-500 hover:text-blue-500 transition-colors">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+            <div class="relative">
+                <img id="nav-profile-avatar" alt="User profile avatar" class="w-8 h-8 rounded-full border border-outline-variant/15 cursor-pointer" src="https://ui-avatars.com/api/?name=User&background=e0e2ec"/>
+                <div id="nav-profile-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-surface-container-lowest rounded-md shadow-lg py-1 z-50 border border-surface-container-highest">
+                    <div class="px-4 py-2 text-xs text-on-surface-variant border-b border-surface-container-highest truncate" id="nav-user-email">loading...</div>
+                    <button id="nav-btn-logout" class="block w-full text-left px-4 py-2 text-sm text-error hover:bg-surface-container-low transition-colors">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Modals -->
+<div id="panel-notifications" class="fixed top-16 right-4 w-80 bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_rgba(25,28,35,0.1)] border border-surface-container-highest z-50 transform transition-transform duration-300 translate-x-[120%] hidden">
+    <div class="p-4 border-b border-surface-container-highest font-headline font-semibold flex justify-between items-center">
+        <span>Notifications</span><span class="text-xs text-primary bg-primary-container/10 px-2 py-1 rounded-full">2 New</span>
+    </div>
+    <div class="p-4 space-y-3 max-h-64 overflow-y-auto text-sm">
+        <div class="p-3 bg-primary-container/10 rounded-md border border-primary-container/20 shadow-sm animate-fade-scale">
+            <span class="font-semibold text-primary">Welcome!</span> Access helpful technical resources here.
+        </div>
+    </div>
+</div>
+
+<div id="modal-settings" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-surface-container-lowest w-full max-w-md rounded-xl shadow-2xl p-6 transform scale-95 transition-transform duration-300" id="modal-settings-content">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-headline font-semibold">Settings</h2>
+            <button id="close-settings-btn" class="text-on-surface-variant hover:text-on-surface transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="space-y-4 text-sm font-body">
+            <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg border border-surface-container-highest">
+                <span class="font-medium text-on-surface">Theme Preference</span>
+                <select class="bg-surface-container-lowest border border-surface-container-highest px-3 py-1.5 rounded outline-none text-xs text-on-surface focus:border-primary"><option>System Default</option><option>Light Mode</option></select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main class="pt-32 pb-16 px-4 md:px-8 max-w-7xl mx-auto space-y-8 relative">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-primary-container/10 blur-[100px] rounded-full pointer-events-none z-0"></div>
+    <header class="mb-12 animate-fade-scale relative z-10">
+        <h1 class="text-[3rem] leading-none font-headline font-bold text-on-surface tracking-[-0.02em] mb-2">Developer Resources</h1>
+        <p class="text-lg text-on-surface-variant font-body">Everything you need to build and deploy your project.</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+        <a href="https://firebase.google.com/docs" target="_blank" class="glass-card rounded-2xl p-6 border border-white/60 shadow-sm hover:shadow-[0_12px_32px_rgba(0,91,191,0.08)] hover:-translate-y-1 transition-all group animate-fade-scale" style="animation-delay: 0.1s;">
+            <div class="w-12 h-12 bg-[#FFCA28]/10 text-[#FFCA28] rounded-xl flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-2xl">local_fire_department</span>
+            </div>
+            <h3 class="font-headline font-semibold text-lg mb-2 group-hover:text-primary transition-colors">Firebase Documentation</h3>
+            <p class="text-on-surface-variant text-sm font-body">Build and run successful apps. Find SDKs, guides, and API reference.</p>
+        </a>
+        
+        <a href="https://flutter.dev/docs" target="_blank" class="glass-card rounded-2xl p-6 border border-white/60 shadow-sm hover:shadow-[0_12px_32px_rgba(0,91,191,0.08)] hover:-translate-y-1 transition-all group animate-fade-scale" style="animation-delay: 0.2s;">
+            <div class="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-2xl">flutter_dash</span>
+            </div>
+            <h3 class="font-headline font-semibold text-lg mb-2 group-hover:text-primary transition-colors">Flutter SDK</h3>
+            <p class="text-on-surface-variant text-sm font-body">Create beautiful, natively compiled, multi-platform applications from a single codebase.</p>
+        </a>
+
+        <a href="https://cloud.google.com/docs" target="_blank" class="glass-card rounded-2xl p-6 border border-white/60 shadow-sm hover:shadow-[0_12px_32px_rgba(0,91,191,0.08)] hover:-translate-y-1 transition-all group animate-fade-scale" style="animation-delay: 0.3s;">
+            <div class="w-12 h-12 bg-green-500/10 text-green-500 rounded-xl flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-2xl">cloud</span>
+            </div>
+            <h3 class="font-headline font-semibold text-lg mb-2 group-hover:text-primary transition-colors">Google Cloud</h3>
+            <p class="text-on-surface-variant text-sm font-body">Scale your applications and integrate powerful machine learning APIs.</p>
+        </a>
+
+        <a href="https://developers.google.com/community/gdsc/solution-challenge" target="_blank" class="glass-card rounded-2xl p-6 border border-white/60 shadow-sm hover:shadow-[0_12px_32px_rgba(0,91,191,0.08)] hover:-translate-y-1 transition-all group animate-fade-scale" style="animation-delay: 0.4s;">
+            <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-2xl">trophy</span>
+            </div>
+            <h3 class="font-headline font-semibold text-lg mb-2 group-hover:text-primary transition-colors">Official Guidelines</h3>
+            <p class="text-on-surface-variant text-sm font-body">Review the judging criteria, rules, and submission requirements.</p>
+        </a>
+    </div>
+</main>
+
+<script type="module">
+import { firebaseInitPromise, onAuthStateChanged, signOut } from '../js/firebase-config.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const { auth } = await firebaseInitPromise;
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = '../landing_page/code.html';
+            return;
+        }
+        document.getElementById('nav-user-email').innerText = user.email;
+        if (user.displayName) {
+            document.getElementById('nav-profile-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName)}&background=e0e2ec&color=191c23`;
+        } else {
+            document.getElementById('nav-profile-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&background=e0e2ec&color=191c23`;
+        }
+    });
+
+    const profileAvatar = document.getElementById('nav-profile-avatar');
+    const profileDropdown = document.getElementById('nav-profile-dropdown');
+    const btnLogout = document.getElementById('nav-btn-logout');
+    const btnNotif = document.getElementById('nav-btn-notifications');
+    const panelNotif = document.getElementById('panel-notifications');
+    const btnSettings = document.getElementById('nav-btn-settings');
+    const modalSettings = document.getElementById('modal-settings');
+    const closeSettingsBtn = document.getElementById('close-settings-btn');
+    const settingsContent = document.getElementById('modal-settings-content');
+
+    profileAvatar.addEventListener('click', () => profileDropdown.classList.toggle('hidden'));
+    btnLogout.addEventListener('click', () => signOut(auth));
+    
+    btnNotif.addEventListener('click', () => {
+        if (panelNotif.classList.contains('hidden')) {
+            panelNotif.classList.remove('hidden');
+            setTimeout(() => { panelNotif.classList.remove('translate-x-[120%]'); }, 10);
+        } else {
+            panelNotif.classList.add('translate-x-[120%]');
+            setTimeout(() => { panelNotif.classList.add('hidden'); }, 300);
+        }
+    });
+    btnSettings.addEventListener('click', () => {
+        modalSettings.classList.remove('hidden');
+        setTimeout(() => { modalSettings.classList.remove('opacity-0'); settingsContent.classList.remove('scale-95'); }, 10);
+    });
+    closeSettingsBtn.addEventListener('click', () => {
+        modalSettings.classList.add('opacity-0'); settingsContent.classList.add('scale-95');
+        setTimeout(() => { modalSettings.classList.add('hidden'); }, 300);
+    });
+});
+</script>
+</body>
+</html>

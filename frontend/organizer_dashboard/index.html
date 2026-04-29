@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer - Solution Challenge Tracker</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#005bbf",
+                        "primary-container": "#1a73e8",
+                        "on-primary": "#ffffff",
+                        "surface": "#f9f9ff",
+                        "surface-container-low": "#f2f3fd",
+                        "surface-container-highest": "#e0e2ec",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191c23",
+                        "on-surface-variant": "#414754",
+                        "tertiary": "#9e4300"
+                    },
+                    fontFamily: {
+                        headline: ["Inter", "sans-serif"],
+                        body: ["Inter", "sans-serif"],
+                        label: ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: theme('colors.surface'); }
+        .ambient-shadow { box-shadow: 0 12px 32px rgba(25, 28, 35, 0.06); }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        .glass-header {
+            background: rgba(242, 243, 253, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(25, 28, 35, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="text-on-surface antialiased min-h-screen flex flex-col">
+
+<header class="glass-header py-6 px-10 flex justify-between items-center shadow-sm sticky top-0 z-50 transition-all duration-300">
+    <div class="flex items-center gap-3 hover:scale-105 transition-transform duration-300">
+        <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">explore</span>
+        <span class="font-headline font-bold text-xl tracking-tight">Organizer Dashboard</span>
+    </div>
+    <div class="flex items-center gap-4">
+        <button id="export-csv-btn" class="flex items-center gap-2 bg-gradient-to-r from-primary to-blue-600 text-white px-8 py-2.5 rounded-full font-label font-bold uppercase tracking-[0.05em] shadow-[0_4px_14px_rgba(0,91,191,0.2)] hover:shadow-[0_6px_20px_rgba(0,91,191,0.3)] hover:-translate-y-0.5 transition-all duration-300">
+            <span class="material-symbols-outlined text-sm">download</span>
+            Export CSV
+        </button>
+        <button id="logout-btn" class="text-on-surface-variant hover:text-primary transition-colors">
+            Logout
+        </button>
+    </div>
+</header>
+
+<main class="flex-1 p-10 max-w-7xl mx-auto w-full space-y-10">
+    <!-- Stats Row -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+        <div class="glass-card ambient-shadow rounded-2xl p-6 border border-white/60 animate-fade-up hover:shadow-[0_16px_40px_rgba(0,91,191,0.08)] hover:-translate-y-1 transition-all duration-300" style="animation-delay: 0.1s;">
+            <h3 class="font-label text-xs uppercase tracking-[0.05em] text-on-surface-variant mb-2">Total Teams</h3>
+            <p id="stat-total-teams" class="font-headline text-[2.5rem] font-bold text-primary">0</p>
+        </div>
+        <div class="glass-card ambient-shadow rounded-2xl p-6 border border-white/60 animate-fade-up hover:shadow-[0_16px_40px_rgba(0,91,191,0.08)] hover:-translate-y-1 transition-all duration-300" style="animation-delay: 0.2s;">
+            <h3 class="font-label text-xs uppercase tracking-[0.05em] text-on-surface-variant mb-2">Submitted Projects</h3>
+            <p id="stat-submissions" class="font-headline text-[2.5rem] font-bold text-primary">0</p>
+        </div>
+        <div class="glass-card ambient-shadow rounded-2xl p-6 border border-white/60 animate-fade-up hover:shadow-[0_16px_40px_rgba(0,91,191,0.08)] hover:-translate-y-1 transition-all duration-300" style="animation-delay: 0.3s;">
+            <h3 class="font-label text-xs uppercase tracking-[0.05em] text-on-surface-variant mb-2">Top Track</h3>
+            <p id="stat-top-track" class="font-headline text-2xl font-bold text-primary mt-3">-</p>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="glass-card ambient-shadow rounded-2xl p-8 border border-white/60 animate-fade-up hover:shadow-[0_16px_40px_rgba(0,91,191,0.08)] transition-all duration-300" style="animation-delay: 0.4s;">
+        <h3 class="font-headline text-xl font-semibold mb-6">Teams by Stage</h3>
+        <div class="h-64">
+            <canvas id="stageChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Filterable Table -->
+    <div class="glass-card ambient-shadow rounded-2xl p-8 border border-white/60 animate-fade-up hover:shadow-[0_16px_40px_rgba(0,91,191,0.08)] transition-all duration-300" style="animation-delay: 0.5s;">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="font-headline text-xl font-semibold">Teams Directory</h3>
+            <input id="team-search" type="text" placeholder="Search teams..." class="bg-surface-container-low px-4 py-2 rounded outline-none w-64 border-b-2 border-transparent focus:border-primary transition-all text-sm font-body">
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left font-body text-sm">
+                <thead>
+                    <tr class="text-on-surface-variant uppercase text-xs tracking-wider border-b border-surface-container-highest">
+                        <th class="py-3 px-4">Team Name</th>
+                        <th class="py-3 px-4">College</th>
+                        <th class="py-3 px-4">Track</th>
+                        <th class="py-3 px-4">Stage</th>
+                        <th class="py-3 px-4 text-center">Members</th>
+                    </tr>
+                </thead>
+                <tbody id="teams-tbody" class="divide-y divide-surface-container-highest">
+                    <!-- Dynamic -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script type="module">
+import { firebaseInitPromise, onAuthStateChanged, collection, onSnapshot, getDoc, doc, signOut } from '../js/firebase-config.js';
+
+let authClient, dbClient, currentUser;
+let chartInstance = null;
+let allTeams = [];
+let idToken = null;
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const { auth, db } = await firebaseInitPromise;
+    authClient = auth;
+    dbClient = db;
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = '../landing_page/code.html';
+            return;
+        }
+
+        // Verify organizer role
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists() && userDoc.data().role === 'organizer') {
+            currentUser = user;
+            idToken = await user.getIdToken();
+            listenToAllTeams();
+        } else {
+            alert("Unauthorized! Redirecting...");
+            window.location.href = '../participant_dashboard/code.html';
+        }
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        signOut(authClient);
+    });
+
+    document.getElementById('team-search').addEventListener('input', (e) => {
+        renderTable(e.target.value);
+    });
+
+    document.getElementById('export-csv-btn').addEventListener('click', async () => {
+        if (!idToken) return;
+        try {
+            // Function URL resolution (fallback to defaults, assuming us-central1)
+            // Replace YOUR_REGION and YOUR_PROJECT if needed
+            const fnUrl = `https://export-teams-csv-oojcw447sq-uc.a.run.app`; 
+            // NOTE: Gen 2 functions have dynamic URLs. A better approach is using firebase.json rewrites or manual config.
+            // Since we can't guess the Gen2 URL easily without project ID, and we are using standard fetch. 
+            // In a real app we'd expose through Firebase Hosting rewrites or Callable Functions.
+            // Assuming hosting rewrite for `/api/export_teams_csv` instead to bypass domain guessing.
+            
+            const response = await fetch('/api/export_teams_csv', { // Requires rewrite in firebase.json
+                headers: { 'Authorization': `Bearer ${idToken}` }
+            });
+            
+            if (!response.ok) throw new Error("Export failed");
+            
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "teams_export.csv";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        } catch (error) {
+            console.error(error);
+            alert("Error exporting CSV. (Function URL may not be mapped or is offline)");
+        }
+    });
+});
+
+function listenToAllTeams() {
+    onSnapshot(collection(dbClient, 'teams'), (snapshot) => {
+        allTeams = [];
+        snapshot.forEach(d => {
+            allTeams.push({ id: d.id, ...d.data() });
+        });
+        
+        updateStats();
+        updateChart();
+        renderTable();
+    });
+}
+
+function updateStats() {
+    let submissions = 0;
+    const tracksCount = {};
+
+    allTeams.forEach(t => {
+        if (t.stage === 'Submitted' || t.stage === 'Finalist') submissions++;
+        if (t.track) tracksCount[t.track] = (tracksCount[t.track] || 0) + 1;
+    });
+
+    let topTrack = "-";
+    let max = 0;
+    for (const [track, count] of Object.entries(tracksCount)) {
+        if (count > max) { max = count; topTrack = track; }
+    }
+
+    document.getElementById('stat-total-teams').innerText = allTeams.length;
+    document.getElementById('stat-submissions').innerText = submissions;
+    document.getElementById('stat-top-track').innerText = topTrack;
+}
+
+function updateChart() {
+    const stageCounts = {
+        'Registered': 0, 'Idea Finalized': 0, 'Prototype Built': 0, 'Submitted': 0, 'Finalist': 0
+    };
+
+    allTeams.forEach(t => {
+        if (stageCounts.hasOwnProperty(t.stage)) {
+            stageCounts[t.stage]++;
+        } else {
+             stageCounts['Registered']++;
+        }
+    });
+
+    const ctx = document.getElementById('stageChart').getContext('2d');
+    
+    if (chartInstance) chartInstance.destroy();
+    
+    chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(stageCounts),
+            datasets: [{
+                label: 'Teams count',
+                data: Object.values(stageCounts),
+                backgroundColor: '#1a73e8',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+
+function renderTable(filter = "") {
+    const tbody = document.getElementById('teams-tbody');
+    tbody.innerHTML = '';
+    
+    const lowerFilter = filter.toLowerCase();
+    
+    const filtered = allTeams.filter(t => 
+        (t.teamName || '').toLowerCase().includes(lowerFilter) ||
+        (t.college || '').toLowerCase().includes(lowerFilter) ||
+        (t.track || '').toLowerCase().includes(lowerFilter)
+    );
+
+    filtered.forEach(t => {
+        const memCount = (t.members && t.members.length) ? t.members.length : 0;
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-surface-container-low transition-colors";
+        tr.innerHTML = `
+            <td class="py-3 px-4 font-medium">${t.teamName || 'N/A'}</td>
+            <td class="py-3 px-4">${t.college || 'N/A'}</td>
+            <td class="py-3 px-4 capitalize">${t.track || 'N/A'}</td>
+            <td class="py-3 px-4"><span class="px-2 py-1 bg-surface-container-high rounded text-xs">${t.stage || 'Registered'}</span></td>
+            <td class="py-3 px-4 text-center">${memCount}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+</script>
+
+</body>
+</html>
